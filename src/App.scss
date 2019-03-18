@@ -1,0 +1,33 @@
+
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+//colors
+$purple: #8A4D76;
+$pink: #FA7C91;
+$brown: #757763;
+$grey: #5E565A ;
+$blue-green: #1B998B ;
+$gunmetal: #2D3047;
+$pastel-yellow :#FFFD82;
+$orange :#FF9B71;
+$desire : #E84855;
+$gainsboro: #D9E5D6;
+
+$beige-light: #D0D1CD;
+$beige-lighter: #F5FBEF;
+
+$family-sans-serif: "Nunito", sans-serif;
+$grey-dark: $brown;
+$grey-light: $beige-light;
+
+$primary: $gunmetal;
+$link: $blue-green;
+$danger: $desire;
+
+$widescreen-enabled: false;
+$fullhd-enabled: false;
+
+$body-background-color: $beige-lighter;
+$control-border-width: 2px;
+$input-border-color: transparent;
+$input-shadow: none;
+@import 'bulma'
