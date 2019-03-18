@@ -1,15 +1,4 @@
 import React, { Component } from 'react'
-
-function setData (data){
-  const name = data[8];
-  const career = data[26];
-  var history = {
-    student : name,
-    caree : career 
-  }
-
-  return data;
-}
 export default class Malla extends Component {
 
   constructor(props) {
@@ -31,7 +20,7 @@ export default class Malla extends Component {
       alert("input no valido");
       return 0;
     }else{
-      setData(data);
+      this.props.action(1,data);
     }
     
 

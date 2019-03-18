@@ -25,6 +25,9 @@ export default class MainLoader extends Component {
         setTimeout(() => {
             this.setState({ text: textLoader[5] })
         }, 6000);
+        setTimeout(() => {
+            this.props.action(2)
+        }, 7000);
     }
     render() {
         return (
