@@ -13,9 +13,6 @@ export default class Malla extends Component {
     var data;
     data = this.history.current.value;
     data = data.split(/\r\n|\r|\n/);
-    for(var i = 0; i < data.length; i++){
-      console.log(i + " : :" + data[i]);
-    }
     if(data[0] !== " Escudo de la República de Colombia" ){
       alert("input no valido");
       return 0;

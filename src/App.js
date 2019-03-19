@@ -11,23 +11,32 @@ function setData (data){
   var history = {
     student : name,
     caree : career,
-    period : []
+    periods : [],
   }
   console.log("hey  ")
-  var periodo = /(\s+0\d\s*Periodo académico\s\|\s\d{4}-)(I{2}|I)/;
- for(var i = 30; i < data.length; i++){
-   const str = periodo.exec(data[i]);
-    if ( str !== null) history.period.push(  {name: str[0].split('|')[1].replace(' ','')} ) 
+  var RegP = /(\s+0\d\s*Periodo académico\s\|\s\d{4}-)(I{2}|I)/;
+  var RegCourse = /(\d{7})-([A-Z]-\d{1,2}|[A-Z]-\d|\d{1,2}|)\s([A-ZÁ-Ú -]+)\s(\d+)\s(\d+)\s(\d+)\s([A-Z])\s(\d+)\s(\d+)\s+(\d\.\d|AP|NA)/;
+//(\d{7})-([A-Z]-\d{1,2}|[A-Z]-\d|\d{1,2}|)\s([A-ZÁ-Ú -]+)\s(\d+)\s(\d+)\s(\d+)\s([A-Z])\s(\d+)\s(\d+)\s+(\d\.\d|AP|NA)
+  var periodCount = -1;
+ for(var i = 10; i < data.length; i++){
+   const str = RegP.exec(data[i]); //Detecta el numero del periodo
+   const str2 =  RegCourse.exec(data[i]);//detecta la asignatura
+   //Se encuentra el periodo de la historia academica, luego se procede a hallar las asignaturas con otra expresion regular. 
+   if ( str !== null){
+      periodCount ++;
+      history.periods.push(  {name: str[0].split('|')[1].replace(' ','') , courses:  []} ); 
+    } 
+   if( str2 !== null){
+     history.periods[periodCount].courses.push(str2);
+   }
   }
-  console.log(history)
-
   return history;
 }
 
 class App extends Component {
   constructor(props){
     super(props);
-    this.state = {
+    this.state = { 
       mode: 0,
     }
     this.changeMode = this.changeMode.bind(this);
