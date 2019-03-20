@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bulma-extensions": "^6.2.4",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-loader-spinner": "^2.3.0",
