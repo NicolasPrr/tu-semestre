@@ -5,7 +5,7 @@ export default class Header extends Component {
         return (
             <div className="tabs">
                 <ul>
-                    <li className="is-active"><a>Malla</a></li>
+                    <li className="is-active"><a>Mi historia</a></li>
                     
                 </ul>
             </div>

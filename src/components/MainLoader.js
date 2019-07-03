@@ -12,22 +12,22 @@ export default class MainLoader extends Component {
     componentDidMount() {
         setTimeout(() => {
             this.setState({ text: textLoader[1] })
-        }, 1000);
+        }, 500);
         setTimeout(() => {
             this.setState({ text: textLoader[2] })
-        }, 2000);
+        }, 1000);
         setTimeout(() => {
             this.setState({ text: textLoader[3] })
-        }, 4000);
+        }, 1500);
         setTimeout(() => {
             this.setState({ text: textLoader[4] })
-        }, 5000);
+        }, 2000);
         setTimeout(() => {
             this.setState({ text: textLoader[5] })
-        }, 6000);
+        }, 2500);
         setTimeout(() => {
             this.props.action(2)
-        }, 7000);
+        }, 3000);
     }
     render() {
         return (

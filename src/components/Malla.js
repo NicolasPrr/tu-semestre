@@ -3,11 +3,57 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ReferenceLine } 
 import {
     Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from 'recharts'
+import {
+    BarChart, Bar, Brush, Legend,
+} from 'recharts';
+import Table from './Table'
 
+
+const BrushBarChart = (props) => {
+    let courses = [];
+    let count = 1;
+    props.data.forEach(period => {
+        period.courses.forEach(course => {
+            const cour = {
+                name: course[3],
+                nota: course[10],
+                count: count
+            }
+            // console.log(cour)
+            courses.push(cour)
+            count++;
+        });
+
+    });
+
+    return (
+        <BarChart
+            width={700}
+            height={300}
+            data={courses}
+            margin={{
+                top: 5, right: 30, left: 20, bottom: 5,
+            }}
+        >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
+            <ReferenceLine y={0} stroke="#000" />
+            <Brush dataKey="count" height={30} stroke="#8884d8" />
+            <ReferenceLine y={3} label="min" stroke="red" />
+            <Bar dataKey="nota" fill="#8884d8" />
+            {/* <Bar dataKey="uv" fill="#82ca9d" /> */}
+
+        </BarChart>
+    )
+
+}
 const RenderLineChart = (props) => {
     return (
         <div>
-            <LineChart width={800} height={300} data={props.data}>
+            <LineChart width={700} height={300} data={props.data}>
                 <Line type="monotone" dataKey="PAPA" stroke="#8884d8" />
                 <Line type="monotone" dataKey="PAPPI" stroke="#82ca9d" />
                 <CartesianGrid strokeDasharray="3 3" />
@@ -23,19 +69,19 @@ const RenderLineChart = (props) => {
     );
 };
 const RenderRadar = (props) => {
-    
+
     return (
         <RadarChart cx={300} cy={250} outerRadius={150} width={500} height={500} data={props.data}>
-        <PolarGrid />
-        <PolarAngleAxis dataKey="name" />
-        <PolarRadiusAxis />
-        <Radar name="Promedio tipologia" dataKey="average" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-        <Tooltip/>
-        
-    </RadarChart>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="name" />
+            <PolarRadiusAxis />
+            <Radar name="Tipologia" dataKey="average" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+            <Tooltip />
+
+        </RadarChart>
     )
 }
-const data = [{ name: 'Page A', uv: 400, pv: 2400, amt: 2400 }, { name: 'Page B', uv: 500, pv: 240, amt: 2400 }, { name: 'Page c', uv: 200, pv: 240, amt: 2400 }];
+// const data = [{ name: 'Page A', uv: 400, pv: 2400, amt: 2400 }, { name: 'Page B', uv: 500, pv: 240, amt: 2400 }, { name: 'Page c', uv: 200, pv: 240, amt: 2400 }];
 
 class Malla extends Component {
     constructor(props) {
@@ -43,9 +89,12 @@ class Malla extends Component {
         this.state = {
             years: [],
             periods: [],
-            dataRadar: []
+            dataRadar: [],
+            add: false,
+            currentPeriod: null,
         };
         this.calculatePAPA = this.calculatePAPA.bind(this);
+        this.setPeriod = this.setPeriod.bind(this);
     }
 
     calculatePAPPI(courses) {
@@ -60,29 +109,55 @@ class Malla extends Component {
         }
         return (PAPPI / creditos).toFixed(2);
     }
-    calculatePAPA(courses, creditsPerScore, totalCredits) {
+    calculatePAPA(courses, creditsPerScore, totalCredits, lost ,) {
         var creditos = totalCredits;
-        var ac = creditsPerScore
+        var ac = creditsPerScore //acumulado
         for (var i = 0; i < courses.length; i++) {
             const cond = courses[i][7] === "T" || courses[i][7] === "O" || courses[i][7] === "C" || courses[i][7] === "L" || courses[i][7] === "B"
             if (cond || courses[i][1] === "1000001") {
-                creditos = creditos + parseInt(courses[i][8])
-                ac = ac + courses[i][8] * parseFloat(courses[i][10])
+                //Para el calculo del PA se tiene en cuenta las materias perdidas
+                //verificamos si la materia estubo perdida
+                const currentCourse = courses[i]
+                const lostCourse = lost[courses[i][1]]
+                if (lostCourse !== undefined) {
+                    if(currentCourse[10] > lostCourse[10] && currentCourse[10] > 3 ){
+                        lost[currentCourse[1]] = undefined;
+                        //actualizar PA, resta  al acumulado  lostCourse[10]*#creditos + currentCourse[10]#numeroCreditos
+                    }else if(currentCourse[10] > lostCourse[10] && currentCourse[10] < 3 ){
+                        //actualizar PA, resta  al acumulado  lostCourse[10]*#creditos + currentCourse[10]#numeroCreditos
+                        lost[currentCourse[1]] = currentCourse;
+                    }
+                }else {
+                    //si se perdio la materia y no esta registrada (primera vez que se pierde)
+                    if(courses[i][10] < 3 ){
+                        lost[courses[i][1]] = courses[i]
+                    }
+                    //actualizar pa y numero de creditos
+                }
+
+                creditos = creditos + parseInt(courses[i][8]);
+                ac = ac + courses[i][8] * parseFloat(courses[i][10]);
             }
         }
         //ac = ac.toFixed(1);
         console.log(ac.toFixed)
         return [(ac / creditos).toFixed(2), ac, creditos];
     }
+    setPeriod(data) {
+        console.log(data)
+        this.setState({ currentPeriod: data })
+    }
     ItemPeriod = (props) => {
 
         return (
             <div>
                 <div className="timeline-item is-success">
-                    <div className="timeline-marker is-warning"></div>
+                    <button className="timeline-marker is-link is-icon button is-small" onClick={this.setPeriod.bind(this, props)}>
+                        <i className="far fa-eye"></i>
+                    </button>
                     <div className="timeline-content">
                         <p className="heading">{props.name}</p>
-                        <p>PAPA: {props.PAPA} - PAPPI: {props.PAPPI} - PA:4.0 </p>
+                        <p>PAPA: {props.PAPA} - PAPPI: {props.PAPPI} - PA:--- </p>
                     </div>
                 </div>
             </div>
@@ -172,6 +247,7 @@ class Malla extends Component {
     }
 
     componentDidMount() {
+
         var periods = [];
         var years = [];
         periods = this.props.info.periods
@@ -182,12 +258,17 @@ class Malla extends Component {
         var disciplinar;
         var elective;
         var radar;
+        let lost = {}
+        var creditsPerScorePA = 0;
+        let creditsPA
+        
         //nota por tipologia (Electiva, obligatoria fundamental, optativa fundamental, disciplinar obligatoria y optativa disciplinar)
         //calculo del papi, pappa
+        // lost["hey"] =" hola"
 
         for (var i = 0; i < periods.length; i++) {
             const PAPPI = this.calculatePAPPI(periods[i].courses);
-            result = this.calculatePAPA(periods[i].courses, creditsPerScore, totalCredits)
+            result = this.calculatePAPA(periods[i].courses, creditsPerScore, totalCredits, lost)
             periods[i].PAPPI = PAPPI;
             periods[i].PAPA = result[0];
             creditsPerScore = result[1];
@@ -197,9 +278,9 @@ class Malla extends Component {
         [fundamentation, disciplinar, elective] = this.averagePerTopology(periods);
 
         radar = [
-            { name: "fundamentacion", average: fundamentation },
-            { name: "disciplinar", average: disciplinar },
-            { name: "electiva", average: elective }
+            { name: "Fundamentacion", average: parseFloat(fundamentation) },
+            { name: "Disciplinar", average: parseFloat(disciplinar) },
+            { name: "Electiva", average: parseFloat(elective) }
         ]
         this.setState({ dataRadar: radar })
         this.setState({ periods: periods })
@@ -226,7 +307,7 @@ class Malla extends Component {
 
         return (
             <div className="columns">
-                <div className="column is-one-third notification">
+                <div className="column is-one-third notification box">
                     <div className="timeline">
                         <header className="timeline-header">
                             <span className="tag is-medium is-primary">Inicio</span>
@@ -238,7 +319,7 @@ class Malla extends Component {
 
                                 <p className="heading">PAPA:0</p>
                                 <p className="heading">PAPPI: 0</p>
-                                <p className="heading">PA: 0</p>
+                                {/* <p className="heading">PA: 0</p> */}
                             </div>
                         </div>
 
@@ -247,14 +328,18 @@ class Malla extends Component {
                         ))}
 
                         <header className="timeline-header">
-                            <span className="tag is-medium is-primary">End</span>
+                            <button className="tag is-medium is-primary button " onClick={null}>
+                                <i className="fas fa-plus-circle"></i>
+                            </button>
                         </header>
                     </div>
 
                 </div>
                 <div className="column">
+                    <Table data={this.state.currentPeriod} />
                     <RenderLineChart data={this.state.periods} />
-                    <RenderRadar data= {this.state.dataRadar}/>
+                    <BrushBarChart data={this.state.periods} />
+                    <RenderRadar data={this.state.dataRadar} />
 
                 </div>
             </div>
