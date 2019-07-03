@@ -56,6 +56,7 @@ const RenderLineChart = (props) => {
             <LineChart width={700} height={300} data={props.data}>
                 <Line type="monotone" dataKey="PAPA" stroke="#8884d8" />
                 <Line type="monotone" dataKey="PAPPI" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="PA" stroke="#ba525e" />
                 <CartesianGrid strokeDasharray="3 3" />
                 <ReferenceLine y={3} label="min" stroke="red" />
                 <ReferenceLine y={5} label="max" stroke="blue" />
