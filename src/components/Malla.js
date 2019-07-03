@@ -109,7 +109,7 @@ class Malla extends Component {
         }
         return (PAPPI / creditos).toFixed(2);
     }
-    calculatePAPA(courses, creditsPerScore, totalCredits, lost ,) {
+    calculatePAPA(courses, creditsPerScore, totalCredits, lost, creditsPerScorePA, credtisPA) {
         var creditos = totalCredits;
         var ac = creditsPerScore //acumulado
         for (var i = 0; i < courses.length; i++) {
@@ -120,17 +120,27 @@ class Malla extends Component {
                 const currentCourse = courses[i]
                 const lostCourse = lost[courses[i][1]]
                 if (lostCourse !== undefined) {
-                    if(currentCourse[10] > lostCourse[10] && currentCourse[10] > 3 ){
+                    if (currentCourse[10] > lostCourse[10] && currentCourse[10] > 3) {
                         lost[currentCourse[1]] = undefined;
                         //actualizar PA, resta  al acumulado  lostCourse[10]*#creditos + currentCourse[10]#numeroCreditos
-                    }else if(currentCourse[10] > lostCourse[10] && currentCourse[10] < 3 ){
+                        creditsPerScorePA += currentCourse[10]*currentCourse[8] - lostCourse[10]*lostCourse[8]
+                        
+                    } else if (currentCourse[10] > lostCourse[10] && currentCourse[10] < 3) {
                         //actualizar PA, resta  al acumulado  lostCourse[10]*#creditos + currentCourse[10]#numeroCreditos
-                        lost[currentCourse[1]] = currentCourse;
+                        lost[currentCourse[1]] = Object.assign({}, currentCourse)
+                        creditsPerScorePA += currentCourse[10]*currentCourse[8] - lostCourse[10]*lostCourse[8]
+                        
                     }
-                }else {
+                } else {
                     //si se perdio la materia y no esta registrada (primera vez que se pierde)
-                    if(courses[i][10] < 3 ){
-                        lost[courses[i][1]] = courses[i]
+                    if (courses[i][10] < 3) {
+                        lost[courses[i][1]] = Object.assign({}, currentCourse)
+                        creditsPerScorePA += currentCourse[10]*currentCourse[8]
+                        credtisPA += parseInt(currentCourse[8])
+                    }else{
+                        //si se pasa la materia normalmente
+                        creditsPerScorePA += currentCourse[10]*currentCourse[8]
+                        credtisPA += parseInt(currentCourse[8])
                     }
                     //actualizar pa y numero de creditos
                 }
@@ -140,8 +150,8 @@ class Malla extends Component {
             }
         }
         //ac = ac.toFixed(1);
-        console.log(ac.toFixed)
-        return [(ac / creditos).toFixed(2), ac, creditos];
+
+        return [(ac / creditos).toFixed(2), ac, creditos, lost, creditsPerScorePA, credtisPA , (creditsPerScorePA / credtisPA).toFixed(2)];
     }
     setPeriod(data) {
         console.log(data)
@@ -157,7 +167,7 @@ class Malla extends Component {
                     </button>
                     <div className="timeline-content">
                         <p className="heading">{props.name}</p>
-                        <p>PAPA: {props.PAPA} - PAPPI: {props.PAPPI} - PA:--- </p>
+                        <p>PAPA: {props.PAPA} - PAPPI: {props.PAPPI} - PA:{props.PA} </p>
                     </div>
                 </div>
             </div>
@@ -260,19 +270,25 @@ class Malla extends Component {
         var radar;
         let lost = {}
         var creditsPerScorePA = 0;
-        let creditsPA
-        
+        let creditsPA = 0;
+
         //nota por tipologia (Electiva, obligatoria fundamental, optativa fundamental, disciplinar obligatoria y optativa disciplinar)
         //calculo del papi, pappa
         // lost["hey"] =" hola"
 
         for (var i = 0; i < periods.length; i++) {
             const PAPPI = this.calculatePAPPI(periods[i].courses);
-            result = this.calculatePAPA(periods[i].courses, creditsPerScore, totalCredits, lost)
             periods[i].PAPPI = PAPPI;
+
+            result = this.calculatePAPA(periods[i].courses, creditsPerScore, totalCredits, lost, creditsPerScorePA, creditsPA)
             periods[i].PAPA = result[0];
+            periods[i].PA = result[6];
             creditsPerScore = result[1];
             totalCredits = result[2];
+            lost = result[3]
+            creditsPerScorePA = result[4]
+            creditsPA =  result[5]
+            // console.log("result", JSON.stringify(result[3]))
         }
 
         [fundamentation, disciplinar, elective] = this.averagePerTopology(periods);
@@ -297,10 +313,6 @@ class Malla extends Component {
 
             this.setState({ years: years })
         }
-        console.log(years);
-        //procedemos a encontrar el PAPPI}
-
-
     }
 
     render() {
