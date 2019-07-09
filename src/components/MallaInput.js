@@ -13,13 +13,13 @@ export default class MallaIInputs extends Component {
     var data;
     data = this.history.current.value;
     data = data.split(/\r\n|\r|\n/);
-    if(data[0] !== " Escudo de la República de Colombia" ){
+    if (data[0] !== " Escudo de la República de Colombia") {
       alert("input no valido");
       return 0;
-    }else{
-      this.props.action(1,data);
+    } else {
+      this.props.action(1, data);
     }
-    
+
 
   }
   render() {

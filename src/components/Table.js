@@ -1,35 +1,78 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-const Table = (props) => {
-    if (props.data === null) return null
-    return (
-        <div className="box is-dark">
-            <p className="title"> {props.data.name}</p>
-            <table className="table  is-mobile is-fullwidth is-size-7">
-                <thead>
+class Table extends Component {
+    code = React.createRef()
+    name = React.createRef()
+    tipology = React.createRef()
+    credits = React.createRef()
+    grade = React.createRef()
 
-                    <th>Codigo</th>
-                    <th><abbr title="Code">Nombre</abbr></th>
-                    <th><abbr title="Note">Nota</abbr></th>
+    addCourseToPeriod = () => {
+        const code = this.code.current.value
+        const name = this.name.current.value
+        const credits = this.credits.current.value
+        const grade = this.grade.current.value
+        const tipology = this.tipology.current.value
+        const course = ["", code, "", name, "", "", "", tipology, credits, "", grade]
+        this.props.action(course)
+    }
+    render() {
+        if (this.props.data === null) return null
 
-                </thead>
-                <tbody>
-                    {Object.keys(props.data.courses).map(key => (
+        let courses = this.props.data.courses;
+        return (
+            <div className="box is-dark">
+                <p className="subtitle"> {this.props.data.name}</p>
+                <table className="table  is-mobile is-fullwidth is-size-7">
+                    <thead>
                         <tr>
-                            <th>{props.data.courses[key][1]}</th>
-                            <td><a title="">{props.data.courses[key][3]}</a></td>
-                            <td>{props.data.courses[key][10]}</td>
-
+                            <th>Codigo     </th>
+                            <th>Nombre     </th>
+                            <th>Tipologia  </th>
+                            <th>Creditos   </th>
+                            <th>Nota       </th>
                         </tr>
 
-                    ))}
+                    </thead>
+                    <tbody>
+                        {Object.keys(courses).map(key => (
+                            <tr>
+                                <th>{courses[key][1]}</th>
+                                <td><a title="">{courses[key][3]}</a></td>
+                                <td>{courses[key][7]}</td>
+                                <td>{courses[key][8]}</td>
+                                <td>{courses[key][10]}</td>
 
-                </tbody>
+                            </tr>
 
-            </table>
+                        ))}
+                        <tr>
+                            <td><input className="input is-small is-link" placeholder="Codigo de la asignatura" ref={this.code} /></td>
+                            <td><input className="input is-small is-link" placeholder="Nombre de la asignatura" ref={this.name} /></td>
+                            <td>
+                                <div className="select">
+                                    <select ref={this.tipology}>
+                                        <option value="C">Disciplinar</option>
+                                        <option value="L" >Electiva</option>
+                                        <option value="F">Fundamentacion</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td><input className="input is-small is-link" placeholder="Creditos" ref={this.credits} /></td>
+                            <td><input className="input is-small is-link" placeholder="Nota" ref={this.grade} /></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-        </div>
-    );
-};
+                <button className="button is-fullwidth is-success is-small" onClick={this.addCourseToPeriod}>
+                    <i class="fas fa-plus-circle"></i>
+                </button>
+
+
+            </div>
+
+        );
+    }
+}
 
 export default Table;

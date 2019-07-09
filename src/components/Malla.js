@@ -8,7 +8,33 @@ import {
 } from 'recharts';
 import Table from './Table'
 
+const Modal = ({ children, closeModal, modalState, title, action, change }) => {
+    if (!modalState) {
+        return null;
+    }
 
+    return (
+        <div className="modal is-active">
+            <div className="modal-background" onClick={closeModal} />
+            <div className="modal-card">
+                <header className="modal-card-head">
+                    <p className="modal-card-title">{title}</p>
+                    <button className="delete" onClick={closeModal} />
+                </header>
+                <section className="modal-card-body">
+
+                    <div class="control">
+                        <input class="input is-dark" type="text" placeholder=" Ejemplo: 2022-I" onChange={change} />
+                    </div>
+                </section>
+                <footer className="modal-card-foot">
+                    <a className="button" onClick={closeModal}>Cancel</a>
+                    <a className="button is-primary" onClick={action}>Asignar</a>
+                </footer>
+            </div>
+        </div>
+    );
+}
 const BrushBarChart = (props) => {
     let courses = [];
     let count = 1;
@@ -82,20 +108,34 @@ const RenderRadar = (props) => {
         </RadarChart>
     )
 }
-// const data = [{ name: 'Page A', uv: 400, pv: 2400, amt: 2400 }, { name: 'Page B', uv: 500, pv: 240, amt: 2400 }, { name: 'Page c', uv: 200, pv: 240, amt: 2400 }];
+// const data = [{name: 'Page A', uv: 400, pv: 2400, amt: 2400 }, {name: 'Page B', uv: 500, pv: 240, amt: 2400 }, {name: 'Page c', uv: 200, pv: 240, amt: 2400 }];
 
 class Malla extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            modalState: false,
             years: [],
             periods: [],
             dataRadar: [],
             add: false,
             currentPeriod: null,
+            name: ""
         };
         this.calculatePAPA = this.calculatePAPA.bind(this);
         this.setPeriod = this.setPeriod.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
+        this.changeInput = this.changeInput.bind(this);
+    }
+    toggleModal() {
+        this.setState((prev, props) => {
+            const newState = !prev.modalState;
+
+            return { modalState: newState };
+        });
+    }
+    changeInput(e) {
+        this.setState({ name: e.target.value })
     }
 
     calculatePAPPI(courses) {
@@ -124,23 +164,23 @@ class Malla extends Component {
                     if (currentCourse[10] > lostCourse[10] && currentCourse[10] > 3) {
                         lost[currentCourse[1]] = undefined;
                         //actualizar PA, resta  al acumulado  lostCourse[10]*#creditos + currentCourse[10]#numeroCreditos
-                        creditsPerScorePA += currentCourse[10]*currentCourse[8] - lostCourse[10]*lostCourse[8]
-                        
+                        creditsPerScorePA += currentCourse[10] * currentCourse[8] - lostCourse[10] * lostCourse[8]
+
                     } else if (currentCourse[10] > lostCourse[10] && currentCourse[10] < 3) {
                         //actualizar PA, resta  al acumulado  lostCourse[10]*#creditos + currentCourse[10]#numeroCreditos
                         lost[currentCourse[1]] = Object.assign({}, currentCourse)
-                        creditsPerScorePA += currentCourse[10]*currentCourse[8] - lostCourse[10]*lostCourse[8]
-                        
+                        creditsPerScorePA += currentCourse[10] * currentCourse[8] - lostCourse[10] * lostCourse[8]
+
                     }
                 } else {
                     //si se perdio la materia y no esta registrada (primera vez que se pierde)
                     if (courses[i][10] < 3) {
                         lost[courses[i][1]] = Object.assign({}, currentCourse)
-                        creditsPerScorePA += currentCourse[10]*currentCourse[8]
+                        creditsPerScorePA += currentCourse[10] * currentCourse[8]
                         credtisPA += parseInt(currentCourse[8])
-                    }else{
+                    } else {
                         //si se pasa la materia normalmente
-                        creditsPerScorePA += currentCourse[10]*currentCourse[8]
+                        creditsPerScorePA += currentCourse[10] * currentCourse[8]
                         credtisPA += parseInt(currentCourse[8])
                     }
                     //actualizar pa y numero de creditos
@@ -152,7 +192,7 @@ class Malla extends Component {
         }
         //ac = ac.toFixed(1);
 
-        return [(ac / creditos).toFixed(2), ac, creditos, lost, creditsPerScorePA, credtisPA , (creditsPerScorePA / credtisPA).toFixed(2)];
+        return [(ac / creditos).toFixed(2), ac, creditos, lost, creditsPerScorePA, credtisPA, (creditsPerScorePA / credtisPA).toFixed(2)];
     }
     setPeriod(data) {
         console.log(data)
@@ -187,6 +227,12 @@ class Malla extends Component {
             </div>
         );
     };
+    test = (props) =>{
+        // console.log(props)
+        let period =  this.state.currentPeriod
+        period.courses.push(props);
+        this.setState({currentPeriod: period})
+    }
     averagePerTopology(periods) {
         var courses;
 
@@ -196,9 +242,6 @@ class Malla extends Component {
 
         var creditsL = 0;
         var scorePerCredtis_L = 0;
-
-        var creditsOF = 0;
-        var scorePerCredtis_OF = 0;
 
         var creditsOF = 0;
         var scorePerCredtis_OF = 0;
@@ -247,7 +290,6 @@ class Malla extends Component {
                 }
 
             }
-            console.log(creditsL)
         }
         fundamentation = ((scorePerCredtis_OF + scorePerCredtis_OPF) / (creditsOF + creditsOPF)).toFixed(2);
         disciplinar = ((scorePerCredtis_OD + scorePerCredtis_OPD) / (creditsOD + creditsOPD)).toFixed(2)
@@ -288,7 +330,7 @@ class Malla extends Component {
             totalCredits = result[2];
             lost = result[3]
             creditsPerScorePA = result[4]
-            creditsPA =  result[5]
+            creditsPA = result[5]
             // console.log("result", JSON.stringify(result[3]))
         }
 
@@ -315,6 +357,23 @@ class Malla extends Component {
             this.setState({ years: years })
         }
     }
+    addPeriod = () => {
+        let years = [...this.state.years];
+        let lastYear = years.length;
+        let periods = [...this.state.periods];
+        let period = {
+            name: this.state.name,
+            courses: [],
+            PA: "NA",
+            PAPA: "NA",
+            PAPPI: "NA"
+        }
+        // period.name = this.state.name
+        years[lastYear - 1].periods.push(period)
+        periods.push(period);
+        this.setState({ years: years , periods: periods})
+        this.toggleModal()
+    }
 
     render() {
 
@@ -323,15 +382,17 @@ class Malla extends Component {
                 <div className="column is-one-third notification box">
                     <div className="timeline">
                         <header className="timeline-header">
-                            <span className="tag is-medium is-primary">Inicio</span>
+                            <span className="tag is-medium is-primary">
+                                <i class="fas fa-sync"></i>
+                            </span>
                         </header>
                         <div className="timeline-item is-primary">
                             <div className="timeline-marker is-warning"></div>
                             <div className="timeline-content">
                                 <p className="heading">NO se tiene en cuenta los creditos cancelados para el calculo del PAPPI</p>
+                                <p >Click en el ojo para ver los detalles</p>
+                                <i className="far fa-eye"></i>
 
-                                <p className="heading">PAPA:0</p>
-                                <p className="heading">PAPPI: 0</p>
                                 {/* <p className="heading">PA: 0</p> */}
                             </div>
                         </div>
@@ -341,20 +402,29 @@ class Malla extends Component {
                         ))}
 
                         <header className="timeline-header">
-                            <button className="tag is-medium is-primary button " onClick={null}>
+                            <button className="tag is-medium is-primary button " onClick={this.toggleModal}>
                                 <i className="fas fa-plus-circle"></i>
                             </button>
                         </header>
+
                     </div>
 
                 </div>
                 <div className="column">
-                    <Table data={this.state.currentPeriod} />
+                    <Table data={this.state.currentPeriod} action = {this.test} />
                     <RenderLineChart data={this.state.periods} />
                     <BrushBarChart data={this.state.periods} />
                     <RenderRadar data={this.state.dataRadar} />
 
                 </div>
+                <Modal
+                    closeModal={this.toggleModal}
+                    modalState={this.state.modalState}
+                    title="Nombre periodo academico"
+                    change={this.changeInput}
+                    action={this.addPeriod}
+                >
+                </Modal>
             </div>
         );
     }
