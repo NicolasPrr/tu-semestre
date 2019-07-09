@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import Table from './Table'
 
-const Modal = ({ children, closeModal, modalState, title, action, change }) => {
+const Modal = ({ closeModal, modalState, title, action, change }) => {
     if (!modalState) {
         return null;
     }
@@ -126,6 +126,7 @@ class Malla extends Component {
         this.setPeriod = this.setPeriod.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.changeInput = this.changeInput.bind(this);
+        this.calculateAll = this.calculateAll.bind(this);
     }
     toggleModal() {
         this.setState((prev, props) => {
@@ -227,11 +228,11 @@ class Malla extends Component {
             </div>
         );
     };
-    test = (props) =>{
+    updatePeriod = (props) => {
         // console.log(props)
-        let period =  this.state.currentPeriod
+        let period = this.state.currentPeriod
         period.courses.push(props);
-        this.setState({currentPeriod: period})
+        this.setState({ currentPeriod: period })
     }
     averagePerTopology(periods) {
         var courses;
@@ -298,12 +299,12 @@ class Malla extends Component {
         return [fundamentation, disciplinar, elective];
 
     }
-
-    componentDidMount() {
+    calculateAll(per) {
 
         var periods = [];
         var years = [];
-        periods = this.props.info.periods
+        periods = [...per]
+        this.setState({ years: [], periods: [] })
         var creditsPerScore = 0;
         var totalCredits = 0
         var result;
@@ -356,6 +357,11 @@ class Malla extends Component {
 
             this.setState({ years: years })
         }
+
+    }
+
+    componentDidMount() {
+        this.calculateAll(this.props.info.periods)
     }
     addPeriod = () => {
         let years = [...this.state.years];
@@ -371,7 +377,7 @@ class Malla extends Component {
         // period.name = this.state.name
         years[lastYear - 1].periods.push(period)
         periods.push(period);
-        this.setState({ years: years , periods: periods})
+        this.setState({ years: years, periods: periods })
         this.toggleModal()
     }
 
@@ -382,9 +388,13 @@ class Malla extends Component {
                 <div className="column is-one-third notification box">
                     <div className="timeline">
                         <header className="timeline-header">
-                            <span className="tag is-medium is-primary">
+                            <button className="tag is-medium is-link button" onClick={() => {
+                                
+                                this.calculateAll(this.state.periods)
+                                alert("se ha actualizado con exito los promedios")
+                            }}>
                                 <i class="fas fa-sync"></i>
-                            </span>
+                            </button>
                         </header>
                         <div className="timeline-item is-primary">
                             <div className="timeline-marker is-warning"></div>
@@ -393,7 +403,10 @@ class Malla extends Component {
                                 <p >Click en el ojo para ver los detalles</p>
                                 <i className="far fa-eye"></i>
 
-                                {/* <p className="heading">PA: 0</p> */}
+                                <p >En caso de agregar un cambio dar click en actualizar</p>
+                                <i class="fas fa-sync"></i>
+                               
+                                
                             </div>
                         </div>
 
@@ -411,7 +424,7 @@ class Malla extends Component {
 
                 </div>
                 <div className="column">
-                    <Table data={this.state.currentPeriod} action = {this.test} />
+                    <Table data={this.state.currentPeriod} action={this.updatePeriod} />
                     <RenderLineChart data={this.state.periods} />
                     <BrushBarChart data={this.state.periods} />
                     <RenderRadar data={this.state.dataRadar} />

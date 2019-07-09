@@ -64,7 +64,7 @@ class Table extends Component {
                     </tbody>
                 </table>
 
-                <button className="button is-fullwidth is-success is-small" onClick={this.addCourseToPeriod}>
+                <button className="button is-fullwidth is-info is-small" onClick={this.addCourseToPeriod}>
                     <i class="fas fa-plus-circle"></i>
                 </button>
 
