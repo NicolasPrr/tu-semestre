@@ -54,7 +54,7 @@ class Table extends Component {
                                     <select ref={this.tipology}>
                                         <option value="C">Disciplinar</option>
                                         <option value="L" >Electiva</option>
-                                        <option value="F">Fundamentacion</option>
+                                        <option value="B">Fundamentacion</option>
                                     </select>
                                 </div>
                             </td>
