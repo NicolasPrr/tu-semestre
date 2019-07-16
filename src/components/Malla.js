@@ -23,8 +23,8 @@ const Modal = ({ closeModal, modalState, title, action, change }) => {
                 </header>
                 <section className="modal-card-body">
 
-                    <div class="control">
-                        <input class="input is-dark" type="text" placeholder=" Ejemplo: 2022-I" onChange={change} />
+                    <div className="control">
+                        <input className="input is-dark" type="text" placeholder=" Ejemplo: 2022-I" onChange={change} />
                     </div>
                 </section>
                 <footer className="modal-card-foot">
@@ -196,7 +196,7 @@ class Malla extends Component {
         return [(ac / creditos).toFixed(2), ac, creditos, lost, creditsPerScorePA, credtisPA, (creditsPerScorePA / credtisPA).toFixed(2)];
     }
     setPeriod(data) {
-        console.log(data)
+        // console.log(data)
         this.setState({ currentPeriod: data })
     }
     ItemPeriod = (props) => {
@@ -204,7 +204,16 @@ class Malla extends Component {
         return (
             <div>
                 <div className="timeline-item is-success">
-                    <button className="timeline-marker is-link is-icon button is-small" onClick={this.setPeriod.bind(this, props)}>
+                    <button className="timeline-marker is-link is-icon button is-small" onClick={ 
+                        () => {
+                            // console.log(props)
+                            this.setPeriod(props);
+                            window.scrollTo(0, 0)
+
+                        }
+                    
+                    }
+                    >
                         <i className="far fa-eye"></i>
                     </button>
                     <div className="timeline-content">
@@ -377,8 +386,10 @@ class Malla extends Component {
         // period.name = this.state.name
         years[lastYear - 1].periods.push(period)
         periods.push(period);
-        this.setState({ years: years, periods: periods })
+        this.setState({ years: years, periods: periods, currentPeriod: period })
         this.toggleModal()
+        window.scrollTo(0, 0)
+        
     }
 
     render() {
@@ -393,7 +404,7 @@ class Malla extends Component {
                                 this.calculateAll(this.state.periods)
                                 alert("se ha actualizado con exito los promedios")
                             }}>
-                                <i class="fas fa-sync"></i>
+                                <i className="fas fa-sync"></i>
                             </button>
                         </header>
                         <div className="timeline-item is-primary">
@@ -404,7 +415,7 @@ class Malla extends Component {
                                 <i className="far fa-eye"></i>
 
                                 <p >En caso de agregar un cambio dar click en actualizar</p>
-                                <i class="fas fa-sync"></i>
+                                <i className="fas fa-sync"></i>
                                
                                 
                             </div>
