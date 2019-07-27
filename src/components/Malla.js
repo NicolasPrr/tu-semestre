@@ -8,33 +8,66 @@ import {
 } from 'recharts';
 import Table from './Table'
 
-const Modal = ({ closeModal, modalState, title, action, change }) => {
-    if (!modalState) {
-        return null;
+
+class Modal extends Component {
+    year = React.createRef();
+    semester = React.createRef();
+    handle = () => {
+        const period = `${this.year.current.value}-${this.semester.current.value}`
+        this.props.action(period);
     }
+    render() {
+        let modalState = this.props.modalState;
+        let date = new Date();
+        let years = [date.getFullYear() - 2, date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1, date.getFullYear() + 2];
+        if (!modalState) return null;
+        return (
+            <div>
+                <div className="modal is-active">
+                    <div className="modal-background" onClick={this.props.closeModal} />
+                    <div className="modal-card">
+                        <header className="modal-card-head">
+                            <p className="modal-card-title">{this.props.title}</p>
+                            <button className="delete" onClick={this.props.closeModal} />
+                        </header>
+                        <section className="modal-card-body">
+                            <div className="field is-grouped">
+                                <div className="control">
 
-    return (
-        <div className="modal is-active">
-            <div className="modal-background" onClick={closeModal} />
-            <div className="modal-card">
-                <header className="modal-card-head">
-                    <p className="modal-card-title">{title}</p>
-                    <button className="delete" onClick={closeModal} />
-                </header>
-                <section className="modal-card-body">
+                                    <div class="select is-rounded is-dark">
+                                        <select ref={this.year}>
+                                            {Object.keys(years).map(key => (
+                                                <option value={years[key]} > {years[key]}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
 
-                    <div className="control">
-                        <input className="input is-dark" type="text" placeholder=" Ejemplo: 2022-I" onChange={change} />
+                                <div className="control">
+                                    <div class="select is-rounded is-dark is-expanded">
+                                        <select ref={this.semester}>
+                                            <option value="I" >I</option>
+                                            <option value="II" >II</option>
+                                        </select>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </section>
+                        <footer className="modal-card-foot">
+                            <a className="button" onClick={this.props.closeModal}>Cancel</a>
+                            <a className="button is-primary" onClick={this.handle}>Asignar</a>
+                        </footer>
                     </div>
-                </section>
-                <footer className="modal-card-foot">
-                    <a className="button" onClick={closeModal}>Cancel</a>
-                    <a className="button is-primary" onClick={action}>Asignar</a>
-                </footer>
+                </div>
+
             </div>
-        </div>
-    );
+        );
+    }
 }
+
+
 const BrushBarChart = (props) => {
     let courses = [];
     let count = 1;
@@ -120,7 +153,6 @@ class Malla extends Component {
             dataRadar: [],
             add: false,
             currentPeriod: null,
-            name: ""
         };
         this.calculatePAPA = this.calculatePAPA.bind(this);
         this.setPeriod = this.setPeriod.bind(this);
@@ -204,14 +236,14 @@ class Malla extends Component {
         return (
             <div>
                 <div className="timeline-item is-success">
-                    <button className="timeline-marker is-link is-icon button is-small" onClick={ 
+                    <button className="timeline-marker is-link is-icon button is-small" onClick={
                         () => {
                             // console.log(props)
                             this.setPeriod(props);
                             window.scrollTo(0, 0)
 
                         }
-                    
+
                     }
                     >
                         <i className="far fa-eye"></i>
@@ -237,10 +269,25 @@ class Malla extends Component {
             </div>
         );
     };
+    //se agrega un curso al periodo
     updatePeriod = (props) => {
         // console.log(props)
         let period = this.state.currentPeriod
         period.courses.push(props);
+        this.setState({ currentPeriod: period })
+    }
+    deleteCourse = (key)  => {
+        let period = this.state.currentPeriod
+        let courses = [...period.courses]
+        courses.splice(key,1)
+        period.courses = courses
+        this.setState({ currentPeriod: period })
+    }
+    updateCourse = (key, course) => {
+        let period = this.state.currentPeriod
+        let courses = [...period.courses]
+        courses[key] = course
+        period.courses = courses
         this.setState({ currentPeriod: period })
     }
     averagePerTopology(periods) {
@@ -272,7 +319,6 @@ class Malla extends Component {
 
         //L LIBRE ELECCIÓN
         //TRABAJO DE GRADO
-        console.log(periods);
         for (var i = 0; i < periods.length; i++) {
             courses = periods[i].courses;
             for (var j = 0; j < courses.length; j++) {
@@ -372,12 +418,14 @@ class Malla extends Component {
     componentDidMount() {
         this.calculateAll(this.props.info.periods)
     }
-    addPeriod = () => {
+
+    addPeriod = (name) => {
+        // console.log(name)
         let years = [...this.state.years];
         let lastYear = years.length;
         let periods = [...this.state.periods];
         let period = {
-            name: this.state.name,
+            name: name,
             courses: [],
             PA: "NA",
             PAPA: "NA",
@@ -389,7 +437,7 @@ class Malla extends Component {
         this.setState({ years: years, periods: periods, currentPeriod: period })
         this.toggleModal()
         window.scrollTo(0, 0)
-        
+
     }
 
     render() {
@@ -400,7 +448,7 @@ class Malla extends Component {
                     <div className="timeline">
                         <header className="timeline-header">
                             <button className="tag is-medium is-link button" onClick={() => {
-                                
+
                                 this.calculateAll(this.state.periods)
                                 alert("se ha actualizado con exito los promedios")
                             }}>
@@ -416,8 +464,8 @@ class Malla extends Component {
 
                                 <p >En caso de agregar un cambio dar click en actualizar</p>
                                 <i className="fas fa-sync"></i>
-                               
-                                
+
+
                             </div>
                         </div>
 
@@ -435,7 +483,11 @@ class Malla extends Component {
 
                 </div>
                 <div className="column">
-                    <Table data={this.state.currentPeriod} action={this.updatePeriod} />
+                    <Table data={this.state.currentPeriod} 
+                      action={this.updatePeriod}  
+                      delete={this.deleteCourse}
+                      update = {this.updateCourse} 
+                       />
                     <RenderLineChart data={this.state.periods} />
                     <BrushBarChart data={this.state.periods} />
                     <RenderRadar data={this.state.dataRadar} />
@@ -444,8 +496,7 @@ class Malla extends Component {
                 <Modal
                     closeModal={this.toggleModal}
                     modalState={this.state.modalState}
-                    title="Nombre periodo academico"
-                    change={this.changeInput}
+                    title="¿Cual es el periodo academico?"
                     action={this.addPeriod}
                 >
                 </Modal>
