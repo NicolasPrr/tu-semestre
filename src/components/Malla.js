@@ -276,10 +276,10 @@ class Malla extends Component {
         period.courses.push(props);
         this.setState({ currentPeriod: period })
     }
-    deleteCourse = (key)  => {
+    deleteCourse = (key) => {
         let period = this.state.currentPeriod
         let courses = [...period.courses]
-        courses.splice(key,1)
+        courses.splice(key, 1)
         period.courses = courses
         this.setState({ currentPeriod: period })
     }
@@ -439,7 +439,11 @@ class Malla extends Component {
         window.scrollTo(0, 0)
 
     }
-
+    savePeriods = () => {
+        localStorage.setItem('periods', JSON.stringify(this.state.periods))
+        alert("Se ha guardado, la proxima vez que abra la pagina no tendra que copiar la historia academica")
+        // console.log(JSON.parse(localStorage.getItem('periods')))
+    }
     render() {
 
         return (
@@ -481,13 +485,33 @@ class Malla extends Component {
 
                     </div>
 
+                    <div className="box">
+                        <div className="field is-grouped">
+                            <p className="control">
+                                <button className="button is-link" onClick={this.savePeriods}>
+                                    Guardar datos en el navegador
+                                 </button>
+                            </p>
+                            <p className="control">
+                                <button className="button is-danger" onClick = {
+                                    () =>{
+                                        localStorage.clear();
+                                        alert("Se ha eliminado los datos del navegador")
+                                    }
+                                }>
+                                    Borrar datos
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
                 <div className="column">
-                    <Table data={this.state.currentPeriod} 
-                      action={this.updatePeriod}  
-                      delete={this.deleteCourse}
-                      update = {this.updateCourse} 
-                       />
+                    <Table data={this.state.currentPeriod}
+                        action={this.updatePeriod}
+                        delete={this.deleteCourse}
+                        update={this.updateCourse}
+                    />
                     <RenderLineChart data={this.state.periods} />
                     <BrushBarChart data={this.state.periods} />
                     <RenderRadar data={this.state.dataRadar} />
