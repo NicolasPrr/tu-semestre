@@ -34,7 +34,7 @@ class Modal extends Component {
                             <div className="field is-grouped">
                                 <div className="control">
 
-                                    <div class="select is-rounded is-dark">
+                                    <div className="select is-rounded is-dark">
                                         <select ref={this.year}>
                                             {Object.keys(years).map(key => (
                                                 <option value={years[key]} > {years[key]}</option>
@@ -44,7 +44,7 @@ class Modal extends Component {
                                 </div>
 
                                 <div className="control">
-                                    <div class="select is-rounded is-dark is-expanded">
+                                    <div className="select is-rounded is-dark is-expanded">
                                         <select ref={this.semester}>
                                             <option value="I" >I</option>
                                             <option value="II" >II</option>
@@ -56,8 +56,8 @@ class Modal extends Component {
                             </div>
                         </section>
                         <footer className="modal-card-foot">
-                            <a className="button" onClick={this.props.closeModal}>Cancel</a>
-                            <a className="button is-primary" onClick={this.handle}>Asignar</a>
+                            <button className="button" onClick={this.props.closeModal}>Cancel</button>
+                            <button className="button is-primary" onClick={this.handle}>Asignar</button>
                         </footer>
                     </div>
                 </div>

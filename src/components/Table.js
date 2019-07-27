@@ -60,8 +60,8 @@ class Modal extends Component {
 
                         </section>
                         <footer className="modal-card-foot">
-                            <a className="button" onClick={this.props.closeModal}>Cancel</a>
-                            <a className="button is-primary" onClick={this.handle}>Editar</a>
+                            <button className="button" onClick={this.props.closeModal}>Cancel</button>
+                            <button className="button is-primary" onClick={this.handle}>Editar</button>
                         </footer>
                     </div>
                 </div>
@@ -161,14 +161,14 @@ class Table extends Component {
                             {Object.keys(courses).map(key => (
                                 <tr>
                                     <th>{courses[key][1]}</th>
-                                    <td><a title="">{courses[key][3]}</a></td>
+                                    <td>{courses[key][3]}</td>
                                     <td>{courses[key][7]}</td>
                                     <td>{courses[key][8]}</td>
                                     <td>{courses[key][10]}</td>
                                     <td>
-                                        <div class="buttons has-addons is-small">
-                                            <button className="button is-small is-link" onClick = {this.editCourse.bind(this, key)}><i class="far fa-edit"></i></button>
-                                            <button className="button is-small is-danger" onClick = {this.deleteCourseToPeriod.bind(this, key)}><i class="fas fa-trash"></i></button>
+                                        <div className="buttons has-addons is-small">
+                                            <button className="button is-small is-link" onClick = {this.editCourse.bind(this, key)}><i className="far fa-edit"></i></button>
+                                            <button className="button is-small is-danger" onClick = {this.deleteCourseToPeriod.bind(this, key)}><i className="fas fa-trash"></i></button>
                                         </div>
                                     </td>
 
