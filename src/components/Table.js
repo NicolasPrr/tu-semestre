@@ -10,6 +10,10 @@ class ModalSIA extends Component {
     }
     siaRequest = () => {
         const name = this.search.current.value
+        if(name === ""){
+            alert("El campo no debe ir vacio")
+            return 
+        }
         let config = {
             headers: {
                 'Content-type': 'text/plain',
