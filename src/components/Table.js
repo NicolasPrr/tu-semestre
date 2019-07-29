@@ -1,5 +1,96 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+class ModalSIA extends Component {
+    search = React.createRef();
+    constructor() {
+        super()
+        this.state = {
+            courses: []
+        }
+    }
+    siaRequest = () => {
+        const name = this.search.current.value
+        let config = {
+            headers: {
+                'Content-type': 'text/plain',
+                'Accept': '*/*',
+                'Accept-Encodig': 'gzip, deflate, br0',
+                'Access-Control-Allow-Origin': 'true'
+            }
+        }
+        const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
+        const request = `{"method": "buscador.obtenerAsignaturas", "params": [${name}, "PRE", "", "PRE", "", "", 1, 25]}        `
+        axios.post(PROXY_URL + "https://siabog.unal.edu.co/buscador/JSON-RPC",
+            request, config
+        )
+            .then(res => {
+                this.setState({ courses: res.data.result.asignaturas.list })
+            }).catch()
+    }
+    render() {
+        let modalState = this.props.modalState;
+        if (!modalState) return null;
+        return (
+            <div>
+                <div className="modal is-active">
+                    <div className="modal-background" onClick={this.props.closeModal} />
+                    <div className="modal-card">
+                        <header className="modal-card-head">
+                            <p className="modal-card-title">{this.props.title}</p>
+                            <button className="delete" onClick={this.props.closeModal} />
+                        </header>
+                        <section className="modal-card-body">
+                            <div className="field has-addons">
+                                <p className="control is-expanded">
+                                    <input className="input is-dark" ref={this.search} type="text" placeholder="Bogota musical" /></p>
+                                <p className="control">
+                                    <button className="button is-info" onClick={this.siaRequest}>
+                                        Buscar 
+                                    </button>
+                                </p>
+                            </div>
+                            <table className="table is-mobile is-fullwidth is-size-7">
+                                <tbody>
+                                    {Object.keys(this.state.courses).map(key => (
+                                        <tr>
+                                            <th>{this.state.courses[key].id_asignatura}</th>
+                                            <th>{this.state.courses[key].nombre}</th>
+                                            <th>{this.state.courses[key].tipologia}</th>
+                                            <th>{this.state.courses[key].creditos}</th>
+                                            <th><button className="button is-warning is-small"
+                                                onClick={() => {
+                                                    {
+                                                        this.props.autocomplete(this.state.courses[key]);
+                                                        this.props.closeModal()
+                                                    }
+                                                }}
+                                            >
+                                                <i className="far fa-plus-square"></i></button></th>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <thead>
+                                    <tr>
+                                        <th>Codigo       </th>
+                                        <th>Nombre       </th>
+                                        <th>Tipologia    </th>
+                                        <th>Creditos     </th>
+                                        <th>Autocompletar     </th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                        </section>
+                        <footer className="modal-card-foot">
+                            <button className="button" onClick={this.props.closeModal}>Cancelar</button>
+                        </footer>
+                    </div>
+                </div>
+
+            </div>
+        );
+    }
+}
 class Modal extends Component {
     code = React.createRef()
     name = React.createRef()
@@ -83,8 +174,11 @@ class Table extends Component {
         super()
         this.state = {
             modalState: false,
+            modalStateSIA: false,
+
         }
         this.toggleModal = this.toggleModal.bind(this);
+        this.toggleModalSIA = this.toggleModalSIA.bind(this);
     }
 
 
@@ -110,7 +204,7 @@ class Table extends Component {
         let name = courses[key][3]
         let credits = courses[key][8]
         let grade = courses[key][10]
-        if (courses[key][7] === "T" || [key][7] === "C") type = "C"
+        if (courses[key][7] === "T" || courses[key][7] === "C") type = "C"
         if (courses[key][7] === "L") type = "L"
 
         let tipology = type
@@ -137,21 +231,29 @@ class Table extends Component {
             return { modalState: newState };
         });
     }
-    clearForm =  e => {
+    toggleModalSIA() {
+        this.setState((prev, props) => {
+            const newState = !prev.modalStateSIA;
+
+            return { modalStateSIA: newState };
+        });
+    }
+    clearForm = e => {
         this.code.current.value = ""
         this.name.current.value = ""
         this.grade.current.value = ""
         this.credits.current.value = ""
     }
-    testRequest = ({name})=>{
-        const request = `{"method": "buscador.obtenerAsignaturas", "params": ["gobierno", "PRE", "", "PRE", "", "", 1, 10]}        `
-        axios.post("https://siabog.unal.edu.co/buscador/JSON-RPC", request )
-        .then(res => {
-            console.log(res)
-        }).catch(function( error){
-            console.log(error)
-        })
+    autocomplete = (course) => {
+        let type = "B"
+        if (course.tipologia === "T" || course.tipologia === "C") type = "C"
+        if (course.tipologia === "L") type = "L"
 
+        this.code.current.value = course.id_asignatura
+        this.name.current.value = course.nombre
+        this.credits.current.value = course.creditos
+        this.tipology.current.value = type
+        this.grade.current.value = ""
     }
     render() {
         if (this.props.data === null) return null
@@ -201,7 +303,7 @@ class Table extends Component {
 
                 </div>
                 <div className="box">
-                    <h1 className = "subtitle">Agregar asignatura</h1>
+                    <h1 className="subtitle">Agregar asignatura</h1>
 
                     <table className="table is-mobile is-fullwidth is-size-7">
                         <tbody>
@@ -238,7 +340,7 @@ class Table extends Component {
 
                     <div className="columns">
                         <div className="column">
-                            <button className="button is-small is-link is-fullwidth" onClick={this.testRequest}> Buscar en el SIA <i class="fas fa-search-plus"></i></button>
+                            <button className="button is-small is-dark is-fullwidth" onClick={this.toggleModalSIA}> Autocompletar con el buscador del SIA <i class="fas fa-search-plus"></i></button>
 
                         </div>
                         <div className="column">
@@ -263,6 +365,13 @@ class Table extends Component {
                     update={this.updateCourse}
                 >
                 </Modal>
+                <ModalSIA
+                    closeModal={this.toggleModalSIA}
+                    modalState={this.state.modalStateSIA}
+                    title="Buscar materia"
+                    autocomplete={this.autocomplete}
+                >
+                </ModalSIA>
             </div>
 
         );
