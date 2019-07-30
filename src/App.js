@@ -14,7 +14,7 @@ function setData(data) {
     caree: career,
     periods: [],
   }
-  var RegP = /(\s+0\d\s*Periodo académico\s\|\s\d{4}-)(I{2}|I)/;
+  var RegP = /(\s+\d\d\s*Periodo académico\s\|\s\d{4}-)(I{2}|I)/;
   var RegCourse = /(\d{7})-([A-Z]-\d{1,2}|[A-Z]-\d|\d{1,2}|)\s([A-ZÁ-Ú \-,\(\)]+)\s(\d+)\s(\d+)\s(\d+)\s([A-Z])\s(\d+)\s(\d+)\s+(\d\.\d|AP|NA)/;
   //(\d{7})-([A-Z]-\d{1,2}|[A-Z]-\d|\d{1,2}|)\s([A-ZÁ-Ú -]+)\s(\d+)\s(\d+)\s(\d+)\s([A-Z])\s(\d+)\s(\d+)\s+(\d\.\d|AP|NA)
   var periodCount = -1;
