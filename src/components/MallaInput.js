@@ -30,6 +30,8 @@ export default class MallaIInputs extends Component {
           <h2 className="subtitle">
             Copia y pega tu historia academica aquí
             </h2>
+          La aplicación te permitará  visualizar  el PA, PAPPI y PAPA de todos los periodos academicos
+        y agregar nuevos cursos!!
         </section>
         <form onSubmit={this.analyze.bind(this)}>
           <div className="field">

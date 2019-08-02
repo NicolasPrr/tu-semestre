@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import { Spring } from 'react-spring/renderprops'
+
 class ModalSIA extends Component {
     search = React.createRef();
     constructor() {
@@ -10,9 +12,9 @@ class ModalSIA extends Component {
     }
     siaRequest = () => {
         const name = this.search.current.value
-        if(name === ""){
+        if (name === "") {
             alert("El campo no debe ir vacio")
-            return 
+            return
         }
         let config = {
             headers: {
@@ -49,7 +51,7 @@ class ModalSIA extends Component {
                                     <input className="input is-dark" ref={this.search} type="text" placeholder="Bogota musical" /></p>
                                 <p className="control">
                                     <button className="button is-info" onClick={this.siaRequest}>
-                                        Buscar 
+                                        Buscar
                                     </button>
                                 </p>
                             </div>
@@ -265,47 +267,59 @@ class Table extends Component {
         let courses = this.props.data.courses;
         return (
             <div>
-
-                <div className="box is-dark">
-                    <p className="subtitle"> {this.props.data.name}</p>
-                    <table className="table  is-mobile is-fullwidth is-size-7">
-                        <thead>
-                            <tr>
-                                <th>Codigo       </th>
-                                <th>Nombre       </th>
-                                <th>Tipologia    </th>
-                                <th>Creditos     </th>
-                                <th>Nota         </th>
-                                <th>Editar/Borrar</th>
-                            </tr>
-
-                        </thead>
-                        <tbody>
-                            {Object.keys(courses).map(key => (
-                                <tr>
-                                    <th>{courses[key][1]}</th>
-                                    <td>{courses[key][3]}</td>
-                                    <td>{courses[key][7]}</td>
-                                    <td>{courses[key][8]}</td>
-                                    <td>{courses[key][10]}</td>
-                                    <td>
-                                        <div className="buttons has-addons is-small">
-                                            <button className="button is-small is-link" onClick={this.editCourse.bind(this, key)}><i className="far fa-edit"></i></button>
-                                            <button className="button is-small is-danger" onClick={this.deleteCourseToPeriod.bind(this, key)}><i className="fas fa-trash"></i></button>
-                                        </div>
-                                    </td>
+                <Spring
+                    from={{ opacity: 0, marginRight: -3000  }}
+                    to={{ opacity: 1, marginRight: 0 }}
+                    reset = {true}
+                    config = {{mass: 1.5}}
+                >
+                    {props => (
+                        <div style={props}>
 
 
-                                </tr>
+                            <div className="box is-dark">
+                                <p className="subtitle"> {this.props.data.name}</p>
+                                <table className="table  is-mobile is-fullwidth is-size-7">
+                                    <thead>
+                                        <tr>
+                                            <th>Codigo       </th>
+                                            <th>Nombre       </th>
+                                            <th>Tipologia    </th>
+                                            <th>Creditos     </th>
+                                            <th>Nota         </th>
+                                            <th>Editar/Borrar</th>
+                                        </tr>
 
-                            ))}
+                                    </thead>
+                                    <tbody>
+                                        {Object.keys(courses).map(key => (
+                                            <tr>
+                                                <th>{courses[key][1]}</th>
+                                                <td>{courses[key][3]}</td>
+                                                <td>{courses[key][7]}</td>
+                                                <td>{courses[key][8]}</td>
+                                                <td>{courses[key][10]}</td>
+                                                <td>
+                                                    <div className="buttons has-addons is-small">
+                                                        <button className="button is-small is-link" onClick={this.editCourse.bind(this, key)}><i className="far fa-edit"></i></button>
+                                                        <button className="button is-small is-danger" onClick={this.deleteCourseToPeriod.bind(this, key)}><i className="fas fa-trash"></i></button>
+                                                    </div>
+                                                </td>
 
-                        </tbody>
-                    </table>
+
+                                            </tr>
+
+                                        ))}
+
+                                    </tbody>
+                                </table>
 
 
 
-                </div>
+                            </div>
+                        </div>
+                    )}
+                </Spring>
                 <div className="box">
                     <h1 className="subtitle">Agregar asignatura</h1>
 
@@ -354,28 +368,52 @@ class Table extends Component {
                     </div>
 
                 </div>
-                <Modal
-                    closeModal={this.toggleModal}
-                    modalState={this.state.modalState}
-                    title="Editar materia"
-                    // change={this.changeInput}
-                    // action={this.addPeriod}
-                    code={this.state.code}
-                    name={this.state.name}
-                    credits={this.state.credits}
-                    tipology={this.state.tipology}
-                    grade={this.state.grade}
-                    key_c={this.state.key_c}
-                    update={this.updateCourse}
+                <Spring
+                    from={{ opacity: 0 }}
+                    to={{ opacity: 1 }}
+                    config={{ duration: 700 }}
+                    reset={true}
                 >
-                </Modal>
-                <ModalSIA
-                    closeModal={this.toggleModalSIA}
-                    modalState={this.state.modalStateSIA}
-                    title="Buscar materia"
-                    autocomplete={this.autocomplete}
+                    {props => (
+                        <div style={props}>
+                            <ModalSIA
+                                closeModal={this.toggleModalSIA}
+                                modalState={this.state.modalStateSIA}
+                                title="Buscar materia"
+                                autocomplete={this.autocomplete}
+                            >
+                            </ModalSIA>
+
+                        </div>
+                    )}
+                </Spring>
+                <Spring
+                    from={{ opacity: 0 }}
+                    to={{ opacity: 1 }}
+                    config={{ duration: 700 }}
+                    reset={true}
                 >
-                </ModalSIA>
+                    {props => (
+                        <div style={props}>
+                            <Modal
+                                closeModal={this.toggleModal}
+                                modalState={this.state.modalState}
+                                title="Editar materia"
+                                // change={this.changeInput}
+                                // action={this.addPeriod}
+                                code={this.state.code}
+                                name={this.state.name}
+                                credits={this.state.credits}
+                                tipology={this.state.tipology}
+                                grade={this.state.grade}
+                                key_c={this.state.key_c}
+                                update={this.updateCourse}
+                            >
+                            </Modal>
+
+                        </div>
+                    )}
+                </Spring>
             </div>
 
         );

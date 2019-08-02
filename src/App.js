@@ -5,6 +5,13 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import MainLoader from './components/MainLoader'
 import Malla from './components/Malla'
+import { useSpring, animated, a } from 'react-spring'
+import { Spring } from 'react-spring/renderprops'
+
+const Test = () => {
+  const props = useSpring({ opacity: 1, from: { opacity: 0 }, config: { duration: 1250 } })
+  return <animated.div style={props}> <h1> I will fade in </h1></animated.div>
+}
 
 function setData(data) {
   const name = data[8];
@@ -57,28 +64,66 @@ class App extends Component {
     let history = null;
     if (localStorage.getItem('periods') !== null) {
       let periods = JSON.parse(localStorage.getItem('periods'))
-      history ={
+      history = {
         periods: periods,
       }
-      this.setState({history: history , mode: 1})
+      this.setState({ history: history, mode: 1 })
     }
 
   }
   render() {
     let md;
     const option = this.state.mode;
-    if (option === 0)
-      md = <MallaInput action={this.changeMode} />
-    else if (option === 1)
-      md = <MainLoader action={this.changeMode} />
-    else if (option === 2)
-      md = <Malla info={this.state.history} />
+    if (option === 0) {
+      md = (
+        <Spring
+          from={{ opacity: 0, marginLeft: -5000 }}
+          to={{ opacity: 1, marginLeft: 0 }}
+          config = {{mass: 2.5}}
+          // onRest ={() => alert("Hey")}
+        >
+          {props => (
+            <div style={props}>
+              <MallaInput action={this.changeMode} />
+            </div>
+          )}
+        </Spring>
+      )
+    }
+
+
+    else if (option === 1) {
+      md = (
+        <Spring
+          from={{ opacity: 0, marginRight: -3000 }}
+          to={{ opacity: 1, marginRight: 0 }}
+        >
+          {props => (
+            <div style={props}>
+              <MainLoader action={this.changeMode} />
+            </div>
+          )}
+        </Spring>
+      )
+      // md = <MainLoader action={this.changeMode} />
+
+
+    }
+    else if (option === 2) {
+      md = (
+        <Malla info={this.state.history} />
+      )
+
+    }
 
     return (
       <div>
         <Header />
+
         {md}
+
         <Footer />
+
       </div>
     );
   }

@@ -7,6 +7,8 @@ import {
     BarChart, Bar, Brush, Legend,
 } from 'recharts';
 import Table from './Table'
+import { Spring } from 'react-spring/renderprops'
+
 
 
 class Modal extends Component {
@@ -493,8 +495,8 @@ class Malla extends Component {
                                  </button>
                             </p>
                             <p className="control">
-                                <button className="button is-danger" onClick = {
-                                    () =>{
+                                <button className="button is-danger" onClick={
+                                    () => {
                                         localStorage.clear();
                                         alert("Se ha eliminado los datos del navegador")
                                     }
@@ -517,13 +519,28 @@ class Malla extends Component {
                     <RenderRadar data={this.state.dataRadar} />
 
                 </div>
-                <Modal
-                    closeModal={this.toggleModal}
-                    modalState={this.state.modalState}
-                    title="¿Cual es el periodo academico?"
-                    action={this.addPeriod}
+                <Spring
+                    from={{ opacity: 0}}
+                    to={{ opacity: 1 }}
+                    config = {{duration: 700}}
+                    reset={true}
                 >
-                </Modal>
+                    {props => (
+                        <div style={props}>
+                            <Modal
+                                closeModal={this.toggleModal}
+                                modalState={this.state.modalState}
+                                title="¿Cual es el periodo academico?"
+                                action={this.addPeriod}
+                            >
+                            </Modal>
+                        </div>
+                    )}
+                </Spring>
+
+          
+                
+       
             </div>
         );
     }
