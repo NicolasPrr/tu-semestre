@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
-import './App.scss';
-import MallaInput from './components/MallaInput'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import MainLoader from './components/MainLoader'
-import Malla from './components/Malla'
-import { useSpring, animated, a } from 'react-spring'
+import '../Styles/App.scss';
+import MallaInput from './calculator/MallaInput'
+import Header from './calculator/Header'
+import Footer from './calculator/Footer'
+import MainLoader from './calculator/MainLoader'
+import Malla from './calculator/Malla'
 import { Spring } from 'react-spring/renderprops'
 
-const Test = () => {
-  const props = useSpring({ opacity: 1, from: { opacity: 0 }, config: { duration: 1250 } })
-  return <animated.div style={props}> <h1> I will fade in </h1></animated.div>
-}
 
 function setData(data) {
   const name = data[8];

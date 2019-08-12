@@ -65,10 +65,10 @@ class ModalSIA extends Component {
                                             <th>{this.state.courses[key].creditos}</th>
                                             <th><button className="button is-warning is-small"
                                                 onClick={() => {
-                                                    {
+                                                    
                                                         this.props.autocomplete(this.state.courses[key]);
                                                         this.props.closeModal()
-                                                    }
+                                                    
                                                 }}
                                             >
                                                 <i className="far fa-plus-square"></i></button></th>
