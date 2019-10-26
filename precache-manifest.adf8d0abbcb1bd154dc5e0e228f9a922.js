@@ -4,15 +4,15 @@ self.__precacheManifest = [
     "url": "/tu-semestre/static/js/runtime~main.e15fa729.js"
   },
   {
-    "revision": "da83dbe2d094031fa9ed",
-    "url": "/tu-semestre/static/js/main.45d44379.chunk.js"
+    "revision": "9f7534eea5877e058601",
+    "url": "/tu-semestre/static/js/main.9b6f3fae.chunk.js"
   },
   {
     "revision": "b2ee12ce6a6ba7cade61",
     "url": "/tu-semestre/static/js/2.ca820ab5.chunk.js"
   },
   {
-    "revision": "da83dbe2d094031fa9ed",
+    "revision": "9f7534eea5877e058601",
     "url": "/tu-semestre/static/css/main.7b7865cf.chunk.css"
   },
   {
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/tu-semestre/static/css/2.7c06e961.chunk.css"
   },
   {
-    "revision": "0b770b48cd478af5e203fab5ba4c2a47",
+    "revision": "9d056fe98ec2aaf140a4bdeb49393eb5",
     "url": "/tu-semestre/index.html"
   }
 ];
