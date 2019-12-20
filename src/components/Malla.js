@@ -191,7 +191,7 @@ class Malla extends Component {
         for (var i = 0; i < courses.length; i++) {
             const cond = courses[i][7] === "T" || courses[i][7] === "O" || courses[i][7] === "C" || courses[i][7] === "L" || courses[i][7] === "B"
             if (cond || courses[i][1] === "1000001") {
-                //Para el calculo del PA se tiene en cuenta las materias perdidas
+                //Para el calculo del PAPA se tiene en cuenta las materias perdidas
                 //verificamos si la materia estubo perdida
                 const currentCourse = courses[i]
                 const lostCourse = lost[courses[i][1]]

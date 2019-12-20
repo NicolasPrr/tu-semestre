@@ -13,7 +13,7 @@ export default class MallaIInputs extends Component {
     var data;
     data = this.history.current.value;
     data = data.split(/\r\n|\r|\n/);
-    if (!data[0].includes("Escudo de la República de Colombia")) {
+    if (!data[0].includes("Logo UniversidadPORTAL DE SERVICIOS ACADÉMICOS")) {
       alert("input no valido");
       return 0;
     } else {
