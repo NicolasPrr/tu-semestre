@@ -358,7 +358,7 @@ class Table extends Component {
 
                     <div className="columns">
                         <div className="column">
-                            <button unselectable className="button is-small is-dark is-fullwidth" onClick={this.toggleModalSIA}> Autocompletar con el buscador del SIA <i class="fas fa-search-plus"></i></button>
+                            <button disabled className="button is-small is-dark is-fullwidth" onClick={this.toggleModalSIA}> Autocompletar con el buscador del SIA (en proceso) <i class="fas fa-search-plus"></i></button>
 
                         </div>
                         <div className="column">
