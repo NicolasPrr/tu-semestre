@@ -10,13 +10,14 @@
     "node-sass": "^4.11.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-ga": "^2.7.0",
     "react-loader-spinner": "^2.3.0",
     "react-scripts": "2.1.8",
     "react-spring": "^8.0.27",
     "recharts": "^1.5.0",
     "ts-pnp": "^1.0.1"
   },
-  "scripts": {  
+  "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

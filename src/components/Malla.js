@@ -8,7 +8,9 @@ import {
 } from 'recharts';
 import Table from './Table'
 import { Spring } from 'react-spring/renderprops'
+import ReactGA from 'react-ga';
 
+ReactGA.pageview("/Malla");
 
 
 class Modal extends Component {
@@ -17,6 +19,10 @@ class Modal extends Component {
     handle = () => {
         const period = `${this.year.current.value}-${this.semester.current.value}`
         this.props.action(period);
+    }
+    componentDidMount(){
+        ReactGA.initialize('UA-145406416-1')
+        ReactGA.pageview("/malla");
     }
     render() {
         let modalState = this.props.modalState;
