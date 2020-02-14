@@ -18,7 +18,12 @@ export default class MallaIInputs extends Component {
     data = this.history.current.value;
     data = data.split(/\r\n|\r|\n/);
     let first_line =  data[0]
-    first_line = data[0].toLowerCase()
+    if(data[0]=== 'Carga Terminada'){
+      first_line = data[1]
+    }else{
+      first_line = data[0]
+    }
+    first_line = first_line.toLowerCase()
     let str_compare = "Logo UniversidadPORTAL DE SERVICIOS ACADÉMICOS"
     str_compare = str_compare.toLowerCase()
     if (!first_line.includes(str_compare)) {
